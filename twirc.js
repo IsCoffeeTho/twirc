@@ -1,0 +1,1 @@
+const twitchirc = require("./src/twirc");
