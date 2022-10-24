@@ -1,0 +1,24 @@
+{
+  "name": "twirc",
+  "version": "1.0.0",
+  "description": "a replacement for tmi.js, a much better way to interface with a twitch account",
+  "main": "index.js",
+  "scripts": {
+    "test": "node bot_test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IsCoffeeTho/twirc.git"
+  },
+  "author": "IsCoffeeTho",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IsCoffeeTho/twirc/issues"
+  },
+  "homepage": "https://github.com/IsCoffeeTho/twirc",
+  "keywords": [
+    "twitch",
+    "twitchbot",
+	"chatbot"
+  ]
+}
