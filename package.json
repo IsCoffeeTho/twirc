@@ -19,6 +19,9 @@
   "keywords": [
     "twitch",
     "twitchbot",
-	"chatbot"
-  ]
+    "chatbot"
+  ],
+  "dependencies": {
+    "websocket": "^1.0.34"
+  }
 }

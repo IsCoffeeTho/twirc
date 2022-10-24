@@ -1,4 +1,4 @@
 # twirc Changelog
-## v1.1 | 25/10/2022
+## v1.0 | 25/10/2022
 * created module
-* add feature of listening to chat
+* rewrote from single script to be more developer friendly

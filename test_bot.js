@@ -1,1 +1,0 @@
-const twirc = require("./twirc");

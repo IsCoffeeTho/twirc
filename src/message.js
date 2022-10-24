@@ -2,16 +2,15 @@ class tmsg
 {
 	#ws;
 
-	constructor({connection, raw, channel})
+	constructor(connection, raw, channel)
 	{
 		this.#ws = connection;
 		this.content = raw.parameters;
-		this.channel = raw.command.channel.slice(1),
+		this.channel = channel;
 		this.user = {
 			username: raw.source.nick,
 			...raw.tags
 		}
-		this.self = false;
 	}
 
 	replyMention (...msgs)
