@@ -1,30 +1,92 @@
 const EventEmitter = require("events");
+const tevents = require("./events");
 
 class tchannel extends EventEmitter {
 	#parent;
+	#state;
 
 	constructor(channelName = "", parent) {
 		super();
 		this.#parent = parent;
-		console.log(parent.constructor.name);
-		console.log(parent.socket.constructor.name);
-		this.#parent.socket.send(`JOIN #${this.channel}`);
+		this._socket = this.#parent.socket;
 		this.name = channelName.toLocaleLowerCase();
+		this.emote_only = false;
+		this._socket.send(`JOIN #${this.name}`);
+		this.#state = 0;
 	}
 
 	_message(ircmsg) {
-		// if (irc)
+		switch (ircmsg.command) {
+			case "USERSTATE":
+				this.badges = [
+					...(ircmsg.tags.badges ? Object.keys(ircmsg.tags.badges) : [])
+				]
+				this.chat_color = ircmsg.tags['color'];
+				this.is_mod = (ircmsg.tags['mod'] == '1' ? true : false);
+				this.is_subscriber = (ircmsg.tags['subscriber'] == '1' ? true : false);
+				this.is_staff = (ircmsg.tags['user-type'] != null ? true : false);
+				break;
+			case "ROOMSTATE":
+				this.emote_only = (ircmsg.tags['emote-only'] == 1 ? true : false);
+				this.subs_only = (ircmsg.tags['subs-only'] == 1 ? true : false);
+				this.followers_only = (ircmsg.tags['followers-only'] == 1 ? true : false);
+				this.slow_mode = (ircmsg.tags['slow'] > 0 ? true : false);
+				this.unique_mode = (ircmsg.tags['r9k'] > 0 ? true : false);
+				this.timeout_time = ircmsg.tags['slow'];
+				if (this.#state == 0)
+					this.#state = 1;
+				else
+					this.emit("state_change");
+				break;
+			case "PRIVMSG":
+				this.emit("chat", new tevents.message(ircmsg, this));
+				break;
+			case "USERNOTICE":
+				switch (ircmsg.tags['msg-id']) {
+					case "announcement":
+						this.emit("announcement", new tevents.announcement(ircmsg, this));
+						break;
+					case "sub": break;
+					case "sub": break;
+					case "sub": break;
+					case "raid":
+						this.emit("raided", new tevents.raid(ircmsg, this));
+						break;
+				}
+				console.log(ircmsg.parameters);
+				console.log(ircmsg.tags);
+				console.log(ircmsg.raw);
+				break;
+			case "JOIN":
+				if (ircmsg.source.nick == this.#parent.username)
+					this.emit("hooked")
+				break;
+			case "PART":
+				if (ircmsg.source.nick == this.#parent.username)
+					this.emit("close")
+				break;
+			case "NOTICE":
+				if (!ircmsg.tags['msg-id'].startsWith('usage_'))
+				{
+					if (ircmsg.tags['msg-id'].startsWith('already_'))
+					{
+						
+					}
+				}
+				break;
+			default: console.log(ircmsg.command); break;
+		}
 	}
 
 	say(...msgs) {
 		for (var i in msgs) {
 			var msg = msgs[i];
-			this.#parent.socket.sendUTF(`PRIVMSG #${this.channel} :${msg}`);
+			this._socket.send(`PRIVMSG #${this.name} :${msg}`);
 		}
 	}
 
 	unhook() {
-		this.#parent.socket.sendUTF(`PART #${this.channel}`);
+		this._socket.send(`PART #${this.channel}`);
 		this.#parent.channels[this.name] = undefined;
 	}
 }

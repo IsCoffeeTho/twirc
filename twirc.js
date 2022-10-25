@@ -1,46 +1,37 @@
 const EventEmitter = require("events");
 const irc = require("./src/irc");
 const tchannel = require("./src/channel");
-const tmsg = require("./src/message");
 
-class twirc extends EventEmitter
-{
-	/** For more information please refer to the docs:
-	 * 
-	 * 	https://github.com/IsCoffeeTho/twirc/wiki
+class twirc extends EventEmitter {
+	/** 
+	 *	For more information please refer to the docs:
+	 *
+	 *	https://github.com/IsCoffeeTho/twirc/wiki
 	*/
 	constructor(options = {
-		debug: false,
-		identity : {
+		identity: {
 			username: "",
 			token: ""
 		}
-	})
-	{
+	}) {
 		super();
-		if (typeof options.debug != 'boolean')
-			this.debug = false;
-		else
-			this.debug = options.debug;
 		if (typeof options.identity != 'object')
 			throw new Error(`Please pass an identity object`);
 		if (!options.identity['username'] || !options.identity['token'])
 			throw new Error(`'indentity' requires the fields: username, token`);
-		this._identity = {
-			_username: options.identity.username,
-			_token: options.identity.token
-		};
+		this.username = options.identity.username.toLocaleLowerCase();
 		this._channels = {};
-		this._socket;
-		if(this.debug)console.log("WS CONNECTING");
+		this.socket;
 		this.irc = new irc("ws://irc-ws.chat.twitch.tv:80");
 		this.irc.on("open", (sock) => {
 			this.socket = sock;
 			sock.capReq("twitch.tv/membership", "twitch.tv/tags", "twitch.tv/commands");
-			sock.authenticate(this._identity._username, `oauth:${this._identity._token}`);
+			sock.authenticate(this.username, `oauth:${options.identity.token}`);
 			sock.on("message", (ircmsg) => {
 				if (ircmsg.command == "001") return this.emit("ready");
-				console.log(ircmsg.command);
+				if (ircmsg.channel)
+					if (this._channels[ircmsg.channel.slice(1)])
+						this._channels[ircmsg.channel.slice(1)]._message(ircmsg);
 			});
 		});
 		this.irc.on("error", (error) => {
@@ -50,15 +41,16 @@ class twirc extends EventEmitter
 	}
 
 	/** returns a channel hook */
-	hookChannel(channelName)
-	{
+	hookChannel(channelName) {
 		return new Promise((res, rej) => {
 			if (this._channels[channelName])
 				rej(new Error(`Can't Hook onto a channel that is already hooked.`));
-			else
-			{
+			else {
 				this._channels[channelName] = new tchannel(channelName, this);
-				this._channels[channelName].on('hooked', () => {
+				this._channels[channelName].once('hooked', () => {
+					res(this._channels[channelName]);
+				});
+				this._channels[channelName].once('bad-hook', () => {
 					res(this._channels[channelName]);
 				});
 			}
@@ -66,8 +58,7 @@ class twirc extends EventEmitter
 	}
 
 	/** Will forceably close IRC*/
-	shutdown()
-	{
+	shutdown() {
 		this.IRCWS.abort();
 	}
 }

@@ -2,20 +2,18 @@ const EventEmitter = require("events");
 const WSC = require("websocket").client;
 
 /** provived by twitch */
-class IRCPARSER {
-	static parse = require('./ircparser');
-}
+const ircparser = require('./ircparser');
 
 class IRCmsg {
 	constructor(socket, msgRaw) {
 		this.socket = socket;
-		const _parsed = IRCPARSER.parse(msgRaw);
+		const _parsed = ircparser(msgRaw);
+		this.raw = msgRaw;
 		if (_parsed) {
-			console.log(_parsed);
 			this.command = _parsed.command.command;
 			if (_parsed.command.channel)
 				this.channel = _parsed.command.channel;
-			this.paramters = _parsed.parameters;
+			this.parameters = _parsed.parameters;
 			this.tags = _parsed.tags;
 			this.source = _parsed.source;
 		}
@@ -41,10 +39,11 @@ class IRCsocket extends EventEmitter {
 			let msgs = rawMsg.split(/\r\n/g);
 			msgs.forEach((message) => {
 				var msg = new IRCmsg(connection, message);
-				switch (msg.command) {
-					case "PING": connection.sendUTF(`PONG ${msg.parameters}`); break;
-					default: this.emit("message", msg); break;
-				}
+				if (msg.command)
+					switch (msg.command) {
+						case "PING": connection.sendUTF(`PONG ${msg.parameters}`); break;
+						default: this.emit("message", msg); break;
+					}
 			});
 		});
 	}

@@ -1,5 +1,4 @@
 const twirc = require("./twirc");
-
 const identity = require("./.testbotinfo.json");
 
 /*
@@ -15,33 +14,40 @@ const identity = require("./.testbotinfo.json");
 */
 
 const app = new twirc({
-	debug : true,
+	debug: true,
 	identity: identity
 });
 
 const ChannelToHook = "iscoffeetho";
 
 app.on("ready", () => {
+	console.log(`Ready on ${app.username}`);
 	app.hookChannel(ChannelToHook).then((channel) => {
 		console.log(`Hooked to ${channel.name}`);
-		
-		channel.on('chat', () => {
-			
+
+		channel.on('chat', (message) => {
+			if (message.content.startsWith("!")) {
+				var mes_seg = message.content.split(" ");
+				switch (mes_seg[0].slice(1)) {
+					case "testcmd":
+						message.reply("This is a test reply");
+						break;
+					case "testerr":
+						channel.say(`/ban ${ChannelToHook}`);
+						break;
+				}
+			}
 		});
 
-		channel.on('subed', () => {
-			
+		channel.on('sub', (sub) => {
+			console.log(`${sub.name}`);
 		});
 
-		channel.on('raided', () => {
-			
+		channel.on('raid', (raid) => {
+			console.log(`${raid.raider.name} raided with ${raid.party_size} viewers`);
 		});
 
-		channel.on('hosted', () => {
-			
-		});
-
-		channel.on('hosting', () => {
+		channel.on('announcement', (e) => {
 			
 		});
 
