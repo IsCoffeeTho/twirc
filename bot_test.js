@@ -1,5 +1,5 @@
 const twirc = require("./twirc");
-const identity = require("./.testbotinfo.json");
+const __identity = require("./.testbotinfo.json");
 
 /*
 	Get token at
@@ -15,7 +15,10 @@ const identity = require("./.testbotinfo.json");
 
 const app = new twirc({
 	debug: true,
-	identity: identity
+	identity: {
+		username: __identity.username,
+		token: __identity.token
+	}
 });
 
 const ChannelToHook = "iscoffeetho";
@@ -53,8 +56,12 @@ app.on("ready", () => {
 
 		channel.on('error', (err) => {
 			console.error(err);
-			channel.unhook();
 		});
+
+		channel.on('fatal', (err) => {
+			console.error(err);
+			channel.unhook();
+		})
 
 	}).catch((err) => {
 		console.error(err);

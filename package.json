@@ -1,8 +1,8 @@
 {
   "name": "twirc",
   "version": "1.0.0",
-  "description": "a replacement for tmi.js, a much better way to interface with a twitch account",
-  "main": "index.js",
+  "description": "A replacement for tmi.js, a much better way to interface with a twitch account.",
+  "main": "twirc.js",
   "scripts": {
     "test": "node bot_test.js"
   },
@@ -17,11 +17,17 @@
   },
   "homepage": "https://github.com/IsCoffeeTho/twirc",
   "keywords": [
+    "backend",
+    "iot",
+    "bot",
     "twitch",
     "twitchbot",
     "chatbot"
   ],
   "dependencies": {
+    "websocket": "^1.0.34"
+  },
+  "devDependencies": {
     "websocket": "^1.0.34"
   }
 }

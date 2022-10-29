@@ -64,3 +64,4 @@ class twirc extends EventEmitter {
 }
 
 module.exports = twirc;
+exports = twirc;
