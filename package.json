@@ -1,33 +1,33 @@
 {
-  "name": "twirc",
-  "version": "1.0.0",
-  "description": "A replacement for tmi.js, a much better way to interface with a twitch account.",
-  "main": "twirc.js",
-  "scripts": {
-    "test": "node bot_test.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/IsCoffeeTho/twirc.git"
-  },
-  "author": "IsCoffeeTho",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/IsCoffeeTho/twirc/issues"
-  },
-  "homepage": "https://github.com/IsCoffeeTho/twirc",
-  "keywords": [
-    "backend",
-    "iot",
-    "bot",
-    "twitch",
-    "twitchbot",
-    "chatbot"
-  ],
-  "dependencies": {
-    "websocket": "^1.0.34"
-  },
-  "devDependencies": {
-    "websocket": "^1.0.34"
-  }
+	"name": "twirc",
+	"version": "0.0.1",
+	"description": "A replacement for tmi.js, a much better way to interface with a twitch account.",
+	"main": "twirc.js",
+	"scripts": {
+		"test": "node bot_test.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/IsCoffeeTho/twirc.git"
+	},
+	"author": "IsCoffeeTho",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/IsCoffeeTho/twirc/issues"
+	},
+	"homepage": "https://github.com/IsCoffeeTho/twirc",
+	"keywords": [
+		"backend",
+		"iot",
+		"bot",
+		"twitch",
+		"twitchbot",
+		"chatbot"
+	],
+	"dependencies": {
+		"websocket": "^1.0.34"
+	},
+	"devDependencies": {
+		"websocket": "^1.0.34"
+	}
 }
