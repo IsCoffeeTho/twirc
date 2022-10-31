@@ -13,4 +13,4 @@ class tuser {
 	};
 }
 
-module.exports = tuser
+module.exports = tuser;
