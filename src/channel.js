@@ -39,6 +39,9 @@ class tchannel extends EventEmitter {
 					this.emit("state_change");
 				break;
 			case "PRIVMSG":
+				if (ircmsg.parameters.match(/(Cheer|Kappa|Kreygasm|Swiftrage|4Head|PJSalt|MrDestructoid|TriHard|NotLikeThis|FailFish|VoHiYo)\d+/g))
+					this.emit("bits", new tevents.cheer(ircmsg, this));
+				else
 				this.emit("chat", new tevents.message(ircmsg, this));
 				break;
 			case "USERNOTICE":
@@ -46,16 +49,23 @@ class tchannel extends EventEmitter {
 					case "announcement":
 						this.emit("announcement", new tevents.announcement(ircmsg, this));
 						break;
-					case "sub": break;
-					case "sub": break;
-					case "sub": break;
+					// case "subgift": break;
+					case "sub":
+					case "resub":
+						this.emit("sub", new tevents.subscription(ircmsg, this));
+						break;
 					case "raid":
 						this.emit("raided", new tevents.raid(ircmsg, this));
 						break;
+					default:
+						console.log(`unhandled ${ircmsg.command}:`);
+						console.log(`= ${ircmsg.command} ${'='.repeat(77 - ircmsg.command.length)}`);
+						console.log(ircmsg.parameters);
+						console.log(ircmsg.tags);
+						console.log(ircmsg.raw);
+						console.log('='.repeat(80));
+						break;
 				}
-				console.log(ircmsg.parameters);
-				console.log(ircmsg.tags);
-				console.log(ircmsg.raw);
 				break;
 			case "JOIN":
 				if (ircmsg.source.nick == this.#parent.username)
@@ -74,7 +84,14 @@ class tchannel extends EventEmitter {
 					}
 				}
 				break;
-			default: console.log(ircmsg.command); break;
+			default: 
+					console.log(`unhandled IRC command "${ircmsg.command}":`);
+					console.log(`= ${ircmsg.command} ${'='.repeat(77 - ircmsg.command.length)}`);
+					console.log(ircmsg.parameters);
+					console.log(ircmsg.tags);
+					console.log(ircmsg.raw);
+					console.log('='.repeat(80));
+				break;
 		}
 	}
 

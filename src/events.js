@@ -1,5 +1,19 @@
 const tuser  = require("./user");
 
+class eventSub {
+	constructor(ircmsg, channel) {
+		this.channel = channel;
+		this.sub = new tuser(ircmsg);
+		this.party_size = ircmsg.tags['msg-param-viewerCount'];
+	}
+}
+
+class eventSubGift {
+	constructor(ircmsg, channel) {
+		this.channel = channel;
+	}
+}
+
 class eventRaid {
 	constructor(ircmsg, channel) {
 		this.channel = channel;
@@ -32,8 +46,25 @@ class eventMessage {
 	}
 }
 
+class eventBits {
+	constructor(ircmsg, channel) {
+		this.bits = 0;
+		this.content = ircmsg.parameters.replace(
+			/(Cheer|Kappa|Kreygasm|Swiftrage|4Head|PJSalt|MrDestructoid|TriHard|NotLikeThis|FailFish|VoHiYo)(\d+)\s+/g,
+			(match, type, bits) => {
+				this.bits += parseInt(bits);
+				return "";
+			}
+		);
+		this.channel = channel;
+		this.id = ircmsg.tags['id'];
+		this.user = new tuser(ircmsg);
+	}
+}
+
 module.exports = {
 	raid: eventRaid,
 	announcement: eventAnnouncement,
-	message: eventMessage
+	message: eventMessage,
+	cheer: eventBits
 }
