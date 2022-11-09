@@ -50,8 +50,8 @@ app.on("ready", () => {
 			console.log(`${raid.raider.name} raided with ${raid.party_size} viewers`);
 		});
 
-		channel.on('announcement', (e) => {
-			
+		channel.on('announcement', (megaphone) => {
+			console.log(`${megaphone.user.name} >> ${megaphone.content}`);
 		});
 
 		channel.on('error', (err) => {

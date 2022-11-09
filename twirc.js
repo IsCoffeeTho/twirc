@@ -61,6 +61,16 @@ class twirc extends EventEmitter {
 	shutdown() {
 		this.IRCWS.abort();
 	}
+
+	static get subTiers()
+	{
+		return [
+			"Prime",
+			"Tier 1",
+			"Tier 2",
+			"Tier 3"
+		];
+	}
 }
 
 module.exports = twirc;

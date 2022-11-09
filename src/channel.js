@@ -42,17 +42,19 @@ class tchannel extends EventEmitter {
 				if (ircmsg.parameters.match(/(Cheer|Kappa|Kreygasm|Swiftrage|4Head|PJSalt|MrDestructoid|TriHard|NotLikeThis|FailFish|VoHiYo)\d+/g))
 					this.emit("bits", new tevents.cheer(ircmsg, this));
 				else
-				this.emit("chat", new tevents.message(ircmsg, this));
+					this.emit("chat", new tevents.message(ircmsg, this));
 				break;
 			case "USERNOTICE":
 				switch (ircmsg.tags['msg-id']) {
 					case "announcement":
 						this.emit("announcement", new tevents.announcement(ircmsg, this));
 						break;
-					// case "subgift": break;
 					case "sub":
 					case "resub":
-						this.emit("sub", new tevents.subscription(ircmsg, this));
+						this.emit("sub", new tevents.sub(ircmsg, this));
+						break;
+					case "subgift":
+						this.emit("subgift", new tevents.giftSub(ircmsg, this));
 						break;
 					case "raid":
 						this.emit("raided", new tevents.raid(ircmsg, this));

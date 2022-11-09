@@ -1,6 +1,6 @@
 {
 	"name": "twirc",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"description": "A replacement for tmi.js, a much better way to interface with a twitch account.",
 	"main": "twirc.js",
 	"scripts": {
